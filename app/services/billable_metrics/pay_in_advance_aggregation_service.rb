@@ -33,7 +33,11 @@ module BillableMetrics
                               when :count_agg
                                 BillableMetrics::Aggregations::CountService
                               when :sum_agg
-                                BillableMetrics::Aggregations::SumService
+                                if charge.prorated?
+                                  BillableMetrics::AdvancedAggregations::ProratedSumService
+                                else
+                                  BillableMetrics::Aggregations::SumService
+                                end
                               when :unique_count_agg
                                 if charge.prorated?
                                   BillableMetrics::AdvancedAggregations::ProratedUniqueCountService
