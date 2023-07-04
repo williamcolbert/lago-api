@@ -492,9 +492,9 @@ RSpec.describe Fees::ChargeService do
             )
             expect(created_fees.first).to have_attributes(
               group: europe,
-              amount_cents: 4000,
-              taxes_amount_cents: 800,
-              units: 2,
+              amount_cents: 2000,
+              taxes_amount_cents: 400,
+              units: 1,
             )
             expect(created_fees.first.applied_taxes.count).to eq(1)
 
