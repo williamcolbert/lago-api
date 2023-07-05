@@ -11,9 +11,10 @@ module BillableMetrics
         return super if event.nil? && options[:is_pay_in_advance] && !options[:is_current_usage]
 
         aggregation = compute_prorated_aggregation.ceil(5)
+        result_without_proration = super if event.nil?
+        result.full_units_number = result_without_proration.aggregation if event.nil?
 
         if options[:is_current_usage]
-          result_without_proration = super
           handle_current_usage(result_without_proration, aggregation, options[:is_pay_in_advance])
         else
           result.aggregation = aggregation
@@ -30,6 +31,7 @@ module BillableMetrics
         return BigDecimal(0) if event.properties.blank?
 
         result_without_proration = super
+        result.full_units_number = result_without_proration
 
         number_of_days = to_datetime.in_time_zone(customer.applicable_timezone) -
                          event.timestamp.in_time_zone(customer.applicable_timezone)
