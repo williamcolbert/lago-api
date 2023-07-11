@@ -19571,6 +19571,20 @@
               ]
             },
             {
+              "name": "nextSubscription",
+              "description": null,
+              "type": {
+                "kind": "OBJECT",
+                "name": "Subscription",
+                "ofType": null
+              },
+              "isDeprecated": false,
+              "deprecationReason": null,
+              "args": [
+
+              ]
+            },
+            {
               "name": "periodEndDate",
               "description": null,
               "type": {
