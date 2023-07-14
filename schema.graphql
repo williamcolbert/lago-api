@@ -4536,6 +4536,11 @@ type Subscription {
 
 type Tax {
   appliedToOrganization: Boolean!
+
+  """
+  Number of charges using this tax
+  """
+  chargesCount: Int!
   code: String!
   createdAt: ISO8601DateTime!
 
@@ -4547,6 +4552,11 @@ type Tax {
   id: ID!
   name: String!
   organization: Organization
+
+  """
+  Number of plans using this tax
+  """
+  plansCount: Int!
   rate: Float!
   updatedAt: ISO8601DateTime!
 }
