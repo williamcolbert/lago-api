@@ -6,7 +6,7 @@ describe Clock::SubscriptionsToBeTerminatedJob, job: true do
   subject { described_class }
 
   describe '.perform' do
-    let(:ending_at) { (Time.current + 2.months + 15.days).beginning_of_day }
+    let(:ending_at) { (Time.current + 2.months + 1.day).beginning_of_day }
     let(:subscription1) { create(:active_subscription, ending_at:) }
     let(:subscription2) { create(:active_subscription, ending_at: ending_at + 1.year) }
     let(:subscription3) { create(:active_subscription, ending_at: nil) }
@@ -71,7 +71,7 @@ describe Clock::SubscriptionsToBeTerminatedJob, job: true do
       end
 
       it 'takes timezone into account' do
-        current_date = ending_at - 15.days
+        current_date = ending_at - 1.day
 
         travel_to(current_date) do
           expect do
