@@ -17,6 +17,7 @@ module BillableMetrics
 
         aggregation = compute_aggregation.ceil(5)
         result.full_units_number = aggregation_without_proration.aggregation if event.nil?
+        result.recurring_updated_at = from_datetime if event.nil?
 
         if options[:is_current_usage]
           handle_current_usage(aggregation, options[:is_pay_in_advance])
@@ -30,6 +31,16 @@ module BillableMetrics
         result
       rescue ActiveRecord::StatementInvalid => e
         result.service_failure!(code: 'aggregation_failure', message: e.message)
+      end
+
+      def compute_per_event_prorated_aggregation
+        period_query
+          .pluck(
+            Arel.sql(
+              "(COALESCE((#{sanitized_field_name})::numeric, 0)) * "\
+              "(#{duration_ratio_sql('events.timestamp', to_datetime)})::numeric",
+            ),
+          )
       end
 
       protected
