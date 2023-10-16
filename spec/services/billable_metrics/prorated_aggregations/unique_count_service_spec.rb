@@ -48,6 +48,7 @@ RSpec.describe BillableMetrics::ProratedAggregations::UniqueCountService, type: 
 
   let(:added_at) { from_datetime - 1.month }
   let(:removed_at) { nil }
+
   let(:quantified_event) do
     create(
       :quantified_event,
@@ -230,6 +231,7 @@ RSpec.describe BillableMetrics::ProratedAggregations::UniqueCountService, type: 
       let(:options) do
         { is_pay_in_advance: false, is_current_usage: true }
       end
+
       let(:new_quantified_event) do
         create(
           :quantified_event,
@@ -253,24 +255,7 @@ RSpec.describe BillableMetrics::ProratedAggregations::UniqueCountService, type: 
       let(:options) do
         { is_pay_in_advance: true, is_current_usage: true }
       end
-      let(:previous_event) do
-        create(
-          :event,
-          code: billable_metric.code,
-          customer:,
-          subscription:,
-          timestamp: from_datetime + 5.days,
-          quantified_event: previous_quantified_event,
-          properties: {
-            unique_id: '000',
-          },
-          metadata: {
-            current_aggregation: '1',
-            max_aggregation: '1',
-            max_aggregation_with_proration: '0.8',
-          },
-        )
-      end
+
       let(:previous_quantified_event) do
         create(
           :quantified_event,
@@ -283,7 +268,7 @@ RSpec.describe BillableMetrics::ProratedAggregations::UniqueCountService, type: 
         )
       end
 
-      before { previous_event }
+      before { previous_quantified_event }
 
       it 'returns period maximum as aggregation' do
         expect(result.aggregation).to eq(1.8)
@@ -302,17 +287,7 @@ RSpec.describe BillableMetrics::ProratedAggregations::UniqueCountService, type: 
 
     context 'when event is given' do
       let(:properties) { { unique_id: '111' } }
-      let(:pay_in_advance_event) do
-        create(
-          :event,
-          code: billable_metric.code,
-          customer:,
-          subscription:,
-          timestamp: from_datetime + 10.days,
-          properties:,
-          quantified_event: new_quantified_event,
-        )
-      end
+
       let(:new_quantified_event) do
         create(
           :quantified_event,
@@ -324,7 +299,7 @@ RSpec.describe BillableMetrics::ProratedAggregations::UniqueCountService, type: 
         )
       end
 
-      before { pay_in_advance_event }
+      before { new_quantified_event }
 
       it 'assigns an pay_in_advance aggregation' do
         expect(result.pay_in_advance_aggregation).to eq(21.fdiv(31).ceil(5))
@@ -339,24 +314,6 @@ RSpec.describe BillableMetrics::ProratedAggregations::UniqueCountService, type: 
       end
 
       context 'when current period aggregation is greater than period maximum' do
-        let(:previous_event) do
-          create(
-            :event,
-            code: billable_metric.code,
-            customer:,
-            subscription:,
-            timestamp: from_datetime + 5.days,
-            quantified_event: previous_quantified_event,
-            properties: {
-              unique_id: '000',
-            },
-            metadata: {
-              current_aggregation: '7',
-              max_aggregation: '7',
-              max_aggregation_with_proration: '5.8',
-            },
-          )
-        end
         let(:previous_quantified_event) do
           create(
             :quantified_event,
@@ -369,7 +326,7 @@ RSpec.describe BillableMetrics::ProratedAggregations::UniqueCountService, type: 
           )
         end
 
-        before { previous_event }
+        before { previous_quantified_event }
 
         it 'assigns a pay_in_advance aggregation' do
           expect(result.pay_in_advance_aggregation).to eq(21.fdiv(31).ceil(5))
@@ -377,24 +334,6 @@ RSpec.describe BillableMetrics::ProratedAggregations::UniqueCountService, type: 
       end
 
       context 'when current period aggregation is less than period maximum' do
-        let(:previous_event) do
-          create(
-            :event,
-            code: billable_metric.code,
-            customer:,
-            subscription:,
-            timestamp: from_datetime + 5.days,
-            quantified_event: previous_quantified_event,
-            properties: {
-              unique_id: '000',
-            },
-            metadata: {
-              current_aggregation: '4',
-              max_aggregation: '7',
-              max_aggregation_with_proration: '5.8',
-            },
-          )
-        end
         let(:previous_quantified_event) do
           create(
             :quantified_event,
@@ -407,7 +346,7 @@ RSpec.describe BillableMetrics::ProratedAggregations::UniqueCountService, type: 
           )
         end
 
-        before { previous_event }
+        before { previous_quantified_event }
 
         it 'assigns a pay_in_advance aggregation' do
           expect(result.pay_in_advance_aggregation).to eq(0)

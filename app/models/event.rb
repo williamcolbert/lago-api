@@ -11,8 +11,6 @@ class Event < EventsRecord
   belongs_to :customer, -> { with_discarded }, optional: true
   belongs_to :subscription, optional: true
 
-  belongs_to :quantified_event, optional: true
-
   validates :transaction_id, presence: true, uniqueness: { scope: %i[organization_id external_subscription_id] }
   validates :code, presence: true
 

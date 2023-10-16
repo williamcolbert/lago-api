@@ -191,7 +191,7 @@ RSpec.describe Events::PostProcessService, type: :service do
         }
       end
 
-      it 'creates an association with a quantified event' do
+      it 'creates a quantified event' do
         result = nil
 
         aggregate_failures do
@@ -199,7 +199,6 @@ RSpec.describe Events::PostProcessService, type: :service do
             .to change(QuantifiedEvent, :count).by(1)
 
           expect(result).to be_success
-          expect(event.reload.quantified_event).to be_present
         end
       end
     end

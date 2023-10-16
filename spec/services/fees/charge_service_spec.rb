@@ -399,17 +399,6 @@ RSpec.describe Fees::ChargeService do
       end
 
       context 'when unique_count_agg' do
-        let(:event1) do
-          create(
-            :event,
-            code: charge.billable_metric.code,
-            customer: subscription.customer,
-            subscription:,
-            timestamp: DateTime.parse('2022-03-16'),
-            quantified_event: quantified_event1,
-            properties: { region: 'usa', foo_bar: 12 },
-          )
-        end
         let(:quantified_event1) do
           create(
             :quantified_event,
@@ -422,17 +411,7 @@ RSpec.describe Fees::ChargeService do
             properties: { region: 'usa', foo_bar: 12 },
           )
         end
-        let(:event2) do
-          create(
-            :event,
-            code: charge.billable_metric.code,
-            customer: subscription.customer,
-            subscription:,
-            timestamp: DateTime.parse('2022-03-16'),
-            quantified_event: quantified_event2,
-            properties: { region: 'europe', foo_bar: 10 },
-          )
-        end
+
         let(:quantified_event2) do
           create(
             :quantified_event,
@@ -445,17 +424,7 @@ RSpec.describe Fees::ChargeService do
             properties: { region: 'europe', foo_bar: 10 },
           )
         end
-        let(:event3) do
-          create(
-            :event,
-            code: charge.billable_metric.code,
-            customer: subscription.customer,
-            subscription:,
-            timestamp: DateTime.parse('2022-03-16'),
-            quantified_event: quantified_event3,
-            properties: { country: 'france', foo_bar: 5 },
-          )
-        end
+
         let(:quantified_event3) do
           create(
             :quantified_event,
@@ -470,9 +439,9 @@ RSpec.describe Fees::ChargeService do
         end
 
         before do
-          event1
-          event2
-          event3
+          quantified_event1
+          quantified_event2
+          quantified_event3
         end
 
         it 'creates expected fees for unique_count_agg aggregation type' do

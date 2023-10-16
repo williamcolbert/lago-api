@@ -80,6 +80,7 @@ module BillableMetrics
           query = query
             .joins(:quantified_event)
             .where(field_presence_condition)
+            # TODO: move metadata into a specific table / quantified event?
             .where("events.metadata->>'current_aggregation' IS NOT NULL")
             .where("events.metadata->>'max_aggregation' IS NOT NULL")
             .where('quantified_events.added_at::timestamp(0) >= ?', from_datetime)
@@ -147,17 +148,7 @@ module BillableMetrics
           .joins(customer: :organization)
           .where(billable_metric_id: billable_metric.id)
           .where(customer_id: subscription.customer_id)
-
-        quantified_events = if billable_metric.recurring?
-          quantified_events.where(external_subscription_id: subscription.external_id)
-        else
-          quantified_event_ids = Event.where(subscription_id: subscription.id)
-            .where('quantified_event_id IS NOT NULL')
-            .pluck('DISTINCT(quantified_event_id)')
-
-          quantified_events.where(id: quantified_event_ids)
-        end
-
+          .where(external_subscription_id: subscription.external_id)
         return quantified_events unless group
 
         count_unique_group_scope(quantified_events)
