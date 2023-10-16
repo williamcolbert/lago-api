@@ -276,12 +276,9 @@ RSpec.describe BillableMetrics::Aggregations::UniqueCountService, type: :service
           properties: {
             unique_id: '000',
           },
-          metadata: {
-            current_aggregation: '1',
-            max_aggregation: '3',
-          },
         )
       end
+
       let(:previous_quantified_event) do
         create(
           :quantified_event,
@@ -294,7 +291,20 @@ RSpec.describe BillableMetrics::Aggregations::UniqueCountService, type: :service
         )
       end
 
-      before { previous_event }
+      let(:cached_aggregation) do
+        create(
+          :cached_aggregation,
+          organization:,
+          billable_metric:,
+          event_id: previous_event.id,
+          external_subscription_id: subscription.external_id,
+          timestamp: previous_event.timestamp,
+          current_aggregation: '1',
+          max_aggregation: '3',
+        )
+      end
+
+      before { cached_aggregation }
 
       it 'returns period maximum as aggregation' do
         result = count_service.aggregate(options:)
@@ -302,7 +312,8 @@ RSpec.describe BillableMetrics::Aggregations::UniqueCountService, type: :service
         expect(result.aggregation).to eq(4)
       end
 
-      context 'when previous event does not exist' do
+      context 'when cached aggregation does not exist' do
+        let(:cached_aggregation) { nil }
         let(:previous_quantified_event) { nil }
 
         before { billable_metric.update!(recurring: false) }
@@ -383,12 +394,9 @@ RSpec.describe BillableMetrics::Aggregations::UniqueCountService, type: :service
             properties: {
               unique_id: '000',
             },
-            metadata: {
-              current_aggregation: '7',
-              max_aggregation: '7',
-            },
           )
         end
+
         let(:previous_quantified_event) do
           create(
             :quantified_event,
@@ -401,7 +409,20 @@ RSpec.describe BillableMetrics::Aggregations::UniqueCountService, type: :service
           )
         end
 
-        before { previous_event }
+        let(:cached_aggregation) do
+          create(
+            :cached_aggregation,
+            organization:,
+            billable_metric:,
+            event_id: previous_event.id,
+            external_subscription_id: subscription.external_id,
+            timestamp: previous_event.timestamp,
+            current_aggregation: '7',
+            max_aggregation: '7',
+          )
+        end
+
+        before { cached_aggregation }
 
         it 'assigns a pay_in_advance aggregation' do
           result = count_service.aggregate
@@ -422,12 +443,9 @@ RSpec.describe BillableMetrics::Aggregations::UniqueCountService, type: :service
             properties: {
               unique_id: '000',
             },
-            metadata: {
-              current_aggregation: '4',
-              max_aggregation: '7',
-            },
           )
         end
+
         let(:previous_quantified_event) do
           create(
             :quantified_event,
@@ -440,7 +458,20 @@ RSpec.describe BillableMetrics::Aggregations::UniqueCountService, type: :service
           )
         end
 
-        before { previous_event }
+        let(:cached_aggregation) do
+          create(
+            :cached_aggregation,
+            organization:,
+            billable_metric:,
+            event_id: previous_event.id,
+            external_subscription_id: subscription.external_id,
+            timestamp: previous_event.timestamp,
+            current_aggregation: '4',
+            max_aggregation: '7',
+          )
+        end
+
+        before { cached_aggregation }
 
         it 'assigns a pay_in_advance aggregation' do
           result = count_service.aggregate
