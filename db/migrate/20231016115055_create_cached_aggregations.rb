@@ -14,7 +14,6 @@ class CreateCachedAggregations < ActiveRecord::Migration[7.0]
       t.decimal :current_aggregation
       t.decimal :max_aggregation
       t.decimal :max_aggregation_with_proration
-      t.decimal :unit_applied
 
       t.datetime :created_at, null: false
 

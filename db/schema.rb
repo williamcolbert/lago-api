@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_16_115055) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_17_082921) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -130,7 +130,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_16_115055) do
     t.decimal "current_aggregation"
     t.decimal "max_aggregation"
     t.decimal "max_aggregation_with_proration"
-    t.decimal "unit_applied"
     t.datetime "created_at", null: false
     t.index ["billable_metric_id"], name: "index_cached_aggregations_on_billable_metric_id"
     t.index ["event_id"], name: "index_cached_aggregations_on_event_id"
