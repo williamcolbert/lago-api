@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_10_090849) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_23_150558) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -348,6 +348,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_10_090849) do
     t.index ["subscription_id"], name: "index_events_on_subscription_id"
   end
 
+  create_table "events_raws", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "fees", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "invoice_id"
     t.uuid "charge_id"
@@ -377,8 +382,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_10_090849) do
     t.bigint "unit_amount_cents", default: 0, null: false
     t.boolean "pay_in_advance", default: false, null: false
     t.decimal "precise_coupons_amount_cents", precision: 30, scale: 5, default: "0.0", null: false
-    t.string "invoice_display_name"
     t.decimal "total_aggregated_units"
+    t.string "invoice_display_name"
     t.index ["add_on_id"], name: "index_fees_on_add_on_id"
     t.index ["applied_add_on_id"], name: "index_fees_on_applied_add_on_id"
     t.index ["charge_id"], name: "index_fees_on_charge_id"

@@ -22,8 +22,9 @@ development:
     host: clickhouse
     port: 8123
     username: default
+    migrations_paths: db/clickhouse_migrate
     debug: true
-    database_tasks: <%= ENV['LAGO_CLICKHOUSE_ENABLED'].present? %>
+    database_tasks: true # <%= ENV['LAGO_CLICKHOUSE_ENABLED'].present? %>
 
 test:
   primary:

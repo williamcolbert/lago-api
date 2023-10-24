@@ -10,6 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ClickhouseActiverecord::Schema.define(version: 0) do
+ClickhouseActiverecord::Schema.define() do
+
+  # TABLE: events_raw
+  # SQL: CREATE TABLE default.events_raw ( `organization_id` String, `external_customer_id` String, `external_subscription_id` String, `transaction_id` String, `timestamp` DateTime, `code` String, `properties` String ) ENGINE = MergeTree PRIMARY KEY (organization_id, external_subscription_id, code, toStartOfDay(timestamp)) ORDER BY (organization_id, external_subscription_id, code, toStartOfDay(timestamp)) TTL timestamp TO VOLUME 'hot', timestamp + toIntervalDay(90) TO VOLUME 'cold' SETTINGS storage_policy = 'hot_cold', index_granularity = 8192
+# Could not dump table "events_raw" because of following StandardError
+#   Unknown type 'String' for column 'organization_id'
 
 end
